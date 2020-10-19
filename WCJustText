@@ -1,0 +1,34 @@
+Sub WCJustText()
+' This sub is based on one written by Microsoft MVP, Paul Edstein ("Macropod")
+' which can be found here https://answers.microsoft.com/en-us/msoffice/forum/msoffice_word-mso_mac-mso_mac2016/excluding-words-from-the-word-count/e6f59014-66f2-4b43-83d2-df52f7b4da5b
+
+Dim Fld As Field
+Dim d As Long
+Dim f As Long
+Dim Tbl As Table
+Dim t As Long
+
+With ActiveDocument
+  For Each Fld In .Fields
+    With Fld
+        .Select
+        f = f + Selection.Range.ComputeStatistics(wdStatisticWords)
+    End With
+  Next
+End With
+With ActiveDocument
+  For Each Tbl In .Tables
+    With Tbl
+      t = t + .Range.ComputeStatistics(wdStatisticWords)
+    End With
+  Next
+    d = .Range.ComputeStatistics(wdStatisticWords)
+End With
+MsgBox "There are:" & vbCr & _
+  d & " words in the document body, including" & vbCr & _
+  t & " words in tables, and" & vbCr & _
+  f & " words in fields, and" & vbCr & vbCr & "There are:" & vbCr & _
+  d - t & " words in the document body, excluding tables," & vbCr & _
+  d - f & " words in the document body, excluding fields, and" & vbCr & _
+  d - (f + t) & " words in the document body, excluding both."
+End Sub
